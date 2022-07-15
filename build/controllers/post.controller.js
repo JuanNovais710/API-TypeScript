@@ -10,31 +10,46 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostController = void 0;
-const express_1 = require("express");
-const service_1 = require("../services/service");
+const post_entity_1 = require("../entities/post.entity");
+const post_repository_1 = require("../repository/post.repository");
+const post_service_1 = require("../services/post.service");
 class PostController {
     constructor() {
-        this.index = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            res.send(this.postService.index());
+        this.postService = new post_service_1.PostService();
+        this.postEntity = new post_entity_1.PostEntity();
+    }
+    index(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const posts = yield post_repository_1.postRepository.find();
+            res.send(posts).json();
         });
-        this.router = (0, express_1.Router)();
-        this.routes();
-        this.postService = new service_1.PostService();
     }
     create(req, res) {
-        res.send(this.postService.create());
+        return __awaiter(this, void 0, void 0, function* () {
+            const { title, content } = req.body;
+            try {
+                const newPost = post_repository_1.postRepository.create({ title, content });
+                yield post_repository_1.postRepository.save(newPost);
+                return res.status(200).json(newPost);
+            }
+            catch (error) {
+                console.log(error);
+                return res.status(500).json('Internal Server Error.');
+            }
+        });
     }
     update(req, res) {
-        res.send(this.postService.update());
+        return __awaiter(this, void 0, void 0, function* () {
+            const updatedPost = yield post_repository_1.postRepository
+                .update(req.params.id, req.body);
+            return res.sendStatus(201);
+        });
     }
     delete(req, res) {
-        res.send(this.postService.delete());
-    }
-    routes() {
-        this.router.get('/', this.index);
-        this.router.post('/', this.create);
-        this.router.put('/:id', this.update);
-        this.router.delete('/:id', this.delete);
+        return __awaiter(this, void 0, void 0, function* () {
+            yield post_repository_1.postRepository.delete(req.params.id);
+            return res.sendStatus(200);
+        });
     }
 }
 exports.PostController = PostController;

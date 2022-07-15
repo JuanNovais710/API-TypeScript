@@ -4,25 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-class Server {
-    constructor() {
-        this.app = (0, express_1.default)();
-        this.configuration();
-        this.routes();
-    }
-    configuration() {
-        this.app.set('port', process.env.PORT || 3000);
-    }
-    routes() {
-        this.app.get("/", (req, res) => {
-            res.send("API com TypeScript!");
-        });
-    }
-    start() {
-        this.app.listen(this.app.get('port'), () => {
-            console.log('Servidor rodando na porta: ' + this.app.get('port'));
-        });
-    }
-}
-const server = new Server();
-server.start();
+const data_source_1 = require("./data-source");
+const routes_1 = __importDefault(require("./routes/routes"));
+data_source_1.AppDataSource.initialize().then(() => {
+    const app = (0, express_1.default)();
+    app.use(express_1.default.json());
+    app.use(routes_1.default);
+    return app.listen(process.env.PORT);
+});
+console.log('API rodando na porta: ' + process.env.PORT);

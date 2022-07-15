@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "experimentalDecorators": true,
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
@@ -100,6 +101,13 @@
     // "skipDefaultLibCheck": true,                      /* Skip type checking .d.ts files that are included with TypeScript. */
     "skipLibCheck": true,
     "outDir": "./build",
-    "rootDirs": ["./src"]                                 /* Skip type checking all .d.ts files. */
+    "rootDirs": ["./src"],
+    "strictPropertyInitialization": false,
+    "emitDecoratorMetadata": true,
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "build"],
+  "ts-node": {
+    "files": true
   }
 }
